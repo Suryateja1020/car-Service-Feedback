@@ -2,19 +2,19 @@ from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from send_mail import send_mail
 import logging
+import os
 
 app = Flask(__name__)
 
-ENV = 'dev'  # Change to 'prod' in production
+ENV = os.getenv('ENV', 'dev')
 
 if ENV == 'dev':
     app.debug = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgre%40123@localhost:5432/mirror_db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgre%40123@localhost:5432/school'
 else:
     app.debug = False
-    # Set your production database URI
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'your_production_database_uri_here'
-
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+    
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
