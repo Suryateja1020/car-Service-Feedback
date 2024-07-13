@@ -3,17 +3,21 @@ from flask_sqlalchemy import SQLAlchemy
 from send_mail import send_mail
 import logging
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 
 ENV = os.getenv('ENV', 'dev')
 
-if ENV == 'dev':
-    app.debug = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgre%40123@localhost:5432/school'
-else:
-    app.debug = False
+if ENV.lower() == 'prod':
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+    app.debug = False
+else:
+    # Development configuration
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgre%40123@localhost:5432/school'
+    app.debug = True
     
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
